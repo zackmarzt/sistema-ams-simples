@@ -1,26 +1,27 @@
 // Asset Management System - JavaScript
 // Initial data from the provided JSON
 
+const API_URL = "http://localhost:3000/assets";
+
 // Global variables
 let assets = [];
 let filterAssets = [];
 let currentEditingAsset = [];
 
 
+async function loadAssetsFromAPI() {
+    const res = await fetch('${API_URL}');
+    assets = await res.json();
+    filteredAssets = [...assets];
+}
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', async function() {
     await loadAssetsFromAPI(); 
     updateDashboard();
-    renderAssetsTable();
     setupEventListeners();
 });
 
-async function loadAssetsFromAPI() {
-    const res = await fetch('http://localhost:3000/assets');
-    assets = await res.json();
-    filteredAssets = [...assets];
-}
 
 async function saveAsset() {
     const form = document.getElementById('assetForm');
