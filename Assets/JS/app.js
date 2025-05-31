@@ -12,7 +12,7 @@ let currentEditingAsset = [];
 async function loadAssetsFromAPI() {
     const res = await fetch(API_URL);
     assets = await res.json();
-    filteredAssets = [...assets];
+    filterAssets = [...assets];
 }
 
 // Initialize the application
@@ -168,7 +168,7 @@ function getCategoryIcon(category) {
 function renderAssetsTable() {
     const tbody = document.getElementById('assetsTableBody');
     
-    if (filteredAssets.length === 0) {
+    if (filterAssets.length === 0) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="7" class="empty-state">
@@ -181,7 +181,7 @@ function renderAssetsTable() {
         return;
     }
     
-    tbody.innerHTML = filteredAssets.map(asset => `
+    tbody.innerHTML = filterAssets.map(asset => `
         <tr>
             <td>${asset.id}</td>
             <td>
@@ -207,7 +207,7 @@ function filterAssets() {
     const categoryFilter = document.getElementById('categoryFilter').value;
     const statusFilter = document.getElementById('statusFilter').value;
     
-    filteredAssets = assets.filter(asset => {
+    filterAssets = assets.filter(asset => {
         const matchesSearch = asset.nome.toLowerCase().includes(searchTerm) ||
                             asset.categoria.toLowerCase().includes(searchTerm) ||
                             asset.responsavel.toLowerCase().includes(searchTerm);
