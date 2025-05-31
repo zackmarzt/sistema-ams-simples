@@ -10,7 +10,7 @@ let currentEditingAsset = [];
 
 
 async function loadAssetsFromAPI() {
-    const res = await fetch('${API_URL}');
+    const res = await fetch(API_URL);
     assets = await res.json();
     filteredAssets = [...assets];
 }
@@ -34,7 +34,7 @@ async function saveAsset() {
         categoria: document.getElementById('assetCategory').value.trim(),
         localizacao: document.getElementById('assetLocation').value.trim(),
         status: document.getElementById('assetStatus').value.trim(),
-        dataAquisicao: document.getElementById('assetAcquisitionData').value.trim(),
+        dataAquisicao: document.getElementById('assetAcquisitionDate').value.trim(),
         valorAquisicao: document.getElementById('assetValue').value.trim(),
         responsavel: document.getElementById('assetResponsible').value.trim(),
         observacoes: document.getElementById('assetObservations').value.trim(),
