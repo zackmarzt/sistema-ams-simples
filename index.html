@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gerenciamento de Ativos - AMS</title>
+    <link rel="stylesheet" href="./Assets/CSS/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container flex items-center justify-between">
+            <div class="flex items-center gap-16">
+                <h1 class="header__title">AMS - Colégio do Bosque Manancias - Matriz</h1>
+            </div>
+            <button class="btn btn--primary" onclick="showAddAssetForm()">
+                + Adicionar Ativo
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Navigation Tabs -->
+            <nav class="nav-tabs">
+                <button class="nav-tab active" onclick="showSection('dashboard')">Dashboard</button>
+                <button class="nav-tab" onclick="showSection('assets')">Lista de Ativos</button>
+            </nav>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section">
+                <h2 class="section__title">Dashboard</h2>
+                
+                <!-- Metrics Cards -->
+                <div class="metrics-grid">
+                    <div class="card metric-card">
+                        <div class="card__body">
+                            <h3 class="metric-card__title">Total de Ativos</h3>
+                            <div class="metric-card__value" id="totalAssets">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card metric-card">
+                        <div class="card__body">
+                            <h3 class="metric-card__title">Ativos Ativos</h3>
+                            <div class="metric-card__value metric-card__value--success" id="activeAssets">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card metric-card">
+                        <div class="card__body">
+                            <h3 class="metric-card__title">Em Manutenção</h3>
+                            <div class="metric-card__value metric-card__value--warning" id="maintenanceAssets">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card metric-card">
+                        <div class="card__body">
+                            <h3 class="metric-card__title">Valor Total</h3>
+                            <div class="metric-card__value" id="totalValue">R$ 0,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories Chart -->
+                <div class="card">
+                    <div class="card__body">
+                        <h3>Ativos por Categoria</h3>
+                        <div class="categories-chart" id="categoriesChart"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Assets List Section -->
+            <section id="assets" class="section" style="display: none;">
+                <h2 class="section__title">Lista de Ativos</h2>
+                
+                <!-- Filters -->
+                <div class="filters">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Buscar por nome...">
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" id="categoryFilter">
+                            <option value="">Todas as Categorias</option>
+                            <option value="Hardware">Hardware</option>
+                            <option value="Software">Software</option>
+                            <option value="Equipamento">Equipamento</option>
+                            <option value="Móveis">Móveis</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" id="statusFilter">
+                            <option value="">Todos os Status</option>
+                            <option value="Ativo">Ativo</option>
+                            <option value="Manutenção">Manutenção</option>
+                            <option value="Descartado">Descartado</option>
+                            <option value="Em Estoque">Em Estoque</option>
+                            <option value="Desaparecido">Desaparecido</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Assets Table -->
+                <div class="card">
+                    <div class="assets-table-container">
+                        <table class="assets-table" id="assetsTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Categoria</th>
+                                    <th>Localização</th>
+                                    <th>Status</th>
+                                    <!--th>Unidade</th-->
+                                    <th>Responsável</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="assetsTableBody">
+                                <!-- Assets will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Asset Form Modal -->
+    <div id="assetModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Adicionar Ativo</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="assetForm">
+                    <input type="hidden" id="assetId">
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="assetName">Nome do Ativo</label>
+                        <input type="text" class="form-control" id="assetName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="assetCategory">Categoria</label>
+                        <select class="form-control" id="assetCategory" required>
+                            <option value="">Selecione uma categoria</option>
+                            <option value="Hardware">Hardware</option>
+                            <option value="Software">Software</option>
+                            <option value="Equipamento">Equipamento</option>
+                            <option value="Móveis">Móveis</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="assetLocation">Localização</label>
+                        <input type="text" class="form-control" id="assetLocation" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="assetStatus">Status</label>
+                        <select class="form-control" id="assetStatus" required>
+                            <option value="">Selecione um status</option>
+                            <option value="Ativo">Ativo</option>
+                            <option value="Manutenção">Manutenção</option>
+                            <option value="Descartado">Descartado</option>
+                            <option value="Em Estoque">Em Estoque</option>
+                            <option value="Desaparecido">Desaparecido</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="assetAcquisitionDate">Data de Aquisição</label>
+                        <input type="date" class="form-control" id="assetAcquisitionDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="assetValue">Valor de Aquisição (R$)</label>
+                        <input type="number" step="0.01" class="form-control" id="assetValue" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="assetResponsible">Responsável</label>
+                        <input type="text" class="form-control" id="assetResponsible" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="assetObservations">Observações</label>
+                        <textarea class="form-control" id="assetObservations" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn--secondary" onclick="closeModal()">Cancelar</button>
+                <button type="submit" class="btn btn--primary" onclick="saveAsset()">Salvar</button>
+                <button type="remove" class="btn btn--tertiary" onclick="deleteAsset()">Deletar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Asset Details Modal -->
+    <div id="detailsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detalhes do Ativo</h3>
+                <button class="modal-close" onclick="closeDetailsModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="assetDetails">
+                <!-- Asset details will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn--secondary" onclick="closeDetailsModal()">Fechar</button>
+                <button type="button" class="btn btn--primary" onclick="editAssetFromDetails()">Editar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./Assets/JS/app.js"></script>
+</body>
+</html>
